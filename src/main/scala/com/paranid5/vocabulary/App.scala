@@ -3,7 +3,10 @@ package com.paranid5.vocabulary
 import cats.data.{Kleisli, Reader}
 import cats.effect.{ExitCode, IO, IOApp}
 import com.comcast.ip4s.{ipv4, port}
+import com.paranid5.vocabulary.data.IOTransactor
 import com.paranid5.vocabulary.di.{AppDependencies, AppModule}
+import doobie.ConnectionIO
+import doobie.syntax.all.*
 import org.http4s.{Request, Response}
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.server.Router
@@ -18,7 +21,13 @@ object App extends IOApp:
 
   private def runServer(): AppDependencies[IO[ExitCode]] =
     Reader: appModule ⇒
-      // TODO: repostiory
+      val wordsRepository = appModule.wordsModule.wordsRepository
+
+      def prepareDb(): ConnectionIO[Unit] =
+        IOTransactor.prepareDatabaseWithUser(appModule.dotenv)
+
+      def createTables(): ConnectionIO[Unit] =
+        wordsRepository.createTable()
 
       def impl: IO[ExitCode] =
         EmberServerBuilder
@@ -31,6 +40,8 @@ object App extends IOApp:
           .as(ExitCode.Success)
 
       for
+        _   ← prepareDb().transact(appModule.transactor)
+        _   ← createTables().transact(appModule.transactor)
         res ← impl
       yield res
 

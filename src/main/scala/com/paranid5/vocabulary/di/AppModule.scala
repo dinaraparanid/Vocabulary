@@ -11,7 +11,8 @@ import io.github.cdimascio.dotenv.Dotenv
 type AppDependencies[F] = Reader[AppModule, F]
 
 final class AppModule(val dotenv: Dotenv):
-  lazy val transactor: IOTransactor = IOTransactor(dotenv)
+  lazy val transactor:  IOTransactor = IOTransactor(dotenv)
+  lazy val wordsModule: WordsModule  = WordsModule(transactor)
 
 object AppModule:
   def apply[T](launch: AppModule ⇒ IO[T]): IO[Either[Throwable, T]] =

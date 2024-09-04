@@ -13,9 +13,9 @@ lazy val root = (project in file("."))
       "io.circe"              %% "circe-generic"                 % "0.14.7",
       "io.circe"              %% "circe-literal"                 % "0.14.7",
       "org.tpolecat"          %% "doobie-core"                   % "1.0.0-RC5",
-      "org.tpolecat"          %% "doobie-postgres"               % "1.0.0-RC5",
       "io.github.cdimascio"    % "dotenv-kotlin"                 % "6.4.1",
       "com.github.daddykotex" %% "courier"                       % "3.2.0",
+      "mysql"                  % "mysql-connector-java"          % "8.0.33",
       "org.scalatest"         %% "scalatest"                     % "3.2.18" % Test,
       "org.typelevel"         %% "cats-effect-testing-scalatest" % "1.5.0"  % Test,
     )

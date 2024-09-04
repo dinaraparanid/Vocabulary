@@ -1,5 +1,5 @@
 package com.paranid5.vocabulary.data
 
-private val PostgresDbUrl      = "POSTGRES_DB_URL"
-private val PostgresDbUser     = "POSTGRES_DB_USER"
-private val PostgresDbPassword = "POSTGRES_DB_PASSWORD"
+private val MySqlDbUrl      = "MY_SQL_DB_URL"
+private val MySqlDbUser     = "MY_SQL_DB_USER"
+private val MySqlDbPassword = "MY_SQL_DB_PASSWORD"
