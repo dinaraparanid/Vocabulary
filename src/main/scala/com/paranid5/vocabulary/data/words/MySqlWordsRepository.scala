@@ -17,6 +17,9 @@ object MySqlWordsRepository:
           text VARCHAR(50) PRIMARY KEY
         )
         """.effect
+        
+      override def words: ConnectionIO[List[Word]] =
+        sql"""SELECT * FROM Vocabulary.Word""".list
 
       override def getWord(text: String): ConnectionIO[Option[Word]] =
         sql"""SELECT * FROM Vocabulary.Word WHERE text = $text""".option

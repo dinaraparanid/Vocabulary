@@ -5,6 +5,7 @@ import cats.effect.{ExitCode, IO, IOApp}
 import com.comcast.ip4s.{ipv4, port}
 import com.paranid5.vocabulary.data.IOTransactor
 import com.paranid5.vocabulary.di.{AppDependencies, AppModule}
+import com.paranid5.vocabulary.routing.main.mainRoutes
 import doobie.ConnectionIO
 import doobie.syntax.all.*
 import org.http4s.{Request, Response}
@@ -46,6 +47,5 @@ object App extends IOApp:
       yield res
 
   private def appService: AppDependencies[Kleisli[IO, Request[IO], Response[IO]]] =
-    Reader: _ ⇒
-      val resources = resourceServiceBuilder[IO](AssetsPath).toRoutes
-      Router("/main" -> resources).orNotFound
+    for main ← mainRoutes
+      yield Router("/main" -> main).orNotFound

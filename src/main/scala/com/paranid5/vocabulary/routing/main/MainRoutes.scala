@@ -9,8 +9,13 @@ import org.http4s.dsl.io.*
 import org.http4s.server.middleware.CORS
 import org.http4s.{HttpRoutes, Request, Response}
 
-//def mainRoutes: AppRoutes =
-//  Reader: appModule ⇒
-//    CORS.policy.withAllowOriginAll:
-//      HttpRoutes.of[IO]: // TODO: восстановление пароля
-//        case GET → (Root / "root.html") ⇒ onRoot() run appModule
+private object WordParamMatcher extends QueryParamDecoderMatcher[String]("word")
+
+def mainRoutes: AppRoutes =
+  Reader: appModule ⇒
+    CORS.policy.withAllowOriginAll:
+      HttpRoutes.of[IO]:
+        case GET → (Root / "index.html") ⇒ onIndex() run appModule
+
+        case POST → (Root / "put") // TODO: дополнить логином / паролем
+          :? WordParamMatcher(word) ⇒ onPutWord(word) run appModule
