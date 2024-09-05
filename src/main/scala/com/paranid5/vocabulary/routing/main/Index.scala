@@ -84,11 +84,18 @@ private def page(words: List[String]): String =
      |  addButton.addEventListener("click", () => {
      |    const newWord = newWordInput.value;
      |    if (newWord) {
-     |      addWord(newWord);
      |      const url = "http://0.0.0.0:8080/main/put?word=" + newWord;
      |
      |      try {
-     |        fetch(url, { method: 'POST' });
+     |        fetch(url, { method: 'POST' }).then(
+     |          (response) => {
+     |            if (response.ok)
+     |              addWord(newWord);
+     |          },
+     |          (error) => {
+     |            console.error("Error:", error);
+     |          }
+     |        );
      |      } catch (error) {
      |        console.error("Error:", error);
      |      }
