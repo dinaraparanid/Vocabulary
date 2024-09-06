@@ -25,14 +25,18 @@ object IOTransactor:
     )
 
   def prepareDatabaseWithUser(dotenv: Dotenv): ConnectionIO[Unit] =
-    val user     = dotenv `get` MySqlDbUser
-    val password = dotenv `get` MySqlDbPassword
+    val admin     = dotenv `get` MySqlDbUser
 
     val createDb = sql"""CREATE DATABASE IF NOT EXISTS Vocabulary""".effect
 
     val grantPrivileges = sql"""
       GRANT ALL PRIVILEGES ON Vocabulary.*
-      TO $user@'localhost'
+      TO $admin@'localhost'
+      """.effect
+
+    val removeRemoteHosts = sql"""
+      DELETE FROM mysql.user
+      WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')
       """.effect
 
     val flushPrivileges = sql"""FLUSH PRIVILEGES""".effect
@@ -40,6 +44,7 @@ object IOTransactor:
     for
       _ ← createDb
       _ ← grantPrivileges
+      _ ← removeRemoteHosts
       _ ← flushPrivileges
     yield ()
 

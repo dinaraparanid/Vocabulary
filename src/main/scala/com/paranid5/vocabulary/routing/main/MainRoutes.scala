@@ -6,7 +6,7 @@ import cats.syntax.all.*
 
 import com.paranid5.vocabulary.domain.User
 import com.paranid5.vocabulary.routing.auth.authMiddleware
-import com.paranid5.vocabulary.routing.utils.{AppAuthRoutes, AppRoutes}
+import com.paranid5.vocabulary.routing.utils.AppRoutes
 
 import org.http4s.dsl.io.*
 import org.http4s.server.middleware.CORS
@@ -30,7 +30,7 @@ private def mainAuthRoutes: AppRoutes =
   Reader: appModule ⇒
     def authRoutes: AuthedRoutes[User, IO] =
       AuthedRoutes.of[User, IO]:
-        case POST -> Root / "put" :? WordParamMatcher(word) as _ ⇒
-          onPutWord(word = word) run appModule
+        case POST -> Root / "put" :? WordParamMatcher(word) as user ⇒
+          onPutWord(user = user, word = word) run appModule
 
     authMiddleware(authRoutes)
