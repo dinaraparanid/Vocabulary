@@ -3,6 +3,7 @@ package com.paranid5.vocabulary.routing.main
 import cats.data.Reader
 import cats.effect.IO
 
+import com.paranid5.vocabulary.domain.User
 import com.paranid5.vocabulary.routing.utils.AppHttpResponse
 
 import doobie.syntax.all.*

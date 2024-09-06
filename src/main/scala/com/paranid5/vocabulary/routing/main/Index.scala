@@ -1,14 +1,15 @@
 package com.paranid5.vocabulary.routing.main
 
 import cats.data.Reader
-
+import com.paranid5.vocabulary.domain.User
 import com.paranid5.vocabulary.routing.utils.AppHttpResponse
-
 import doobie.syntax.all.*
-
 import org.http4s.headers.`Content-Type`
 import org.http4s.*
 import org.http4s.dsl.io.*
+
+import java.nio.charset.StandardCharsets
+import java.util.Base64
 
 def onIndex(): AppHttpResponse =
   Reader: appModule ⇒
@@ -16,11 +17,20 @@ def onIndex(): AppHttpResponse =
 
     val response =
       for words ← wordsRepository.words.transact(appModule.transactor)
-        yield Ok(page(words.map(_.text)), `Content-Type`(MediaType.text.html))
+        yield Ok(
+          page(words = words.map(_.text), admin = appModule.admin),
+          `Content-Type`(MediaType.text.html)
+        )
 
     response.flatten
 
-private def page(words: List[String]): String =
+private def page(
+  words: List[String],
+  admin: User,
+): String =
+  val adminCredentials = Base64.getEncoder.encodeToString:
+    s"${admin.name}:${admin.password}".getBytes(StandardCharsets.UTF_8)
+
   s"""
      |<!DOCTYPE html>
      |<html lang="en">
@@ -87,7 +97,11 @@ private def page(words: List[String]): String =
      |      const url = "http://0.0.0.0:8080/main/put?word=" + newWord;
      |
      |      try {
-     |        fetch(url, { method: 'POST' }).then(
+     |        const headers = {
+     |          'Authorization': 'Basic $adminCredentials'
+     |        };
+     |
+     |        fetch(url, { method: 'POST', headers: headers }).then(
      |          (response) => {
      |            if (response.ok)
      |              addWord(newWord);
