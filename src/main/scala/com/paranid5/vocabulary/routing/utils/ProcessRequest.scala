@@ -18,7 +18,7 @@ def processRequest[R](requestRes: DecodeResult[IO, R])(
       .map: res ⇒
         res
           .sequence
-          .map(_ getOrElse invalidBody)
+          .map(_ getOrElse invalidBodyIO)
           .transact(appModule.transactor)
       .flatten
       .flatten

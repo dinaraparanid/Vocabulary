@@ -3,7 +3,8 @@ package com.paranid5.vocabulary.routing.main
 import cats.data.Reader
 
 import com.paranid5.vocabulary.domain.User
-import com.paranid5.vocabulary.routing.utils.AppHttpResponse
+import com.paranid5.vocabulary.routing.utils.{AppHttpResponse, forbiddenIO}
+import com.paranid5.vocabulary.routing.utils.rate_limiter.IORateLimiter
 
 import doobie.syntax.all.*
 
@@ -14,7 +15,16 @@ import org.http4s.dsl.io.*
 import java.nio.charset.StandardCharsets
 import java.util.Base64
 
+private val rateLimitedOnIndex = IORateLimiter.limit0(onIndexImpl)
+
 def onIndex(): AppHttpResponse =
+  Reader: appModule ⇒
+    rateLimitedOnIndex().fold(
+      fa = _ ⇒ forbiddenIO,
+      fb = _ run appModule
+    ).flatten
+
+private def onIndexImpl(): AppHttpResponse =
   Reader: appModule ⇒
     val wordsRepository = appModule.wordsModule.wordsRepository
 
@@ -122,4 +132,3 @@ private def page(
      |</body>
      |</html>
      |""".stripMargin
-
