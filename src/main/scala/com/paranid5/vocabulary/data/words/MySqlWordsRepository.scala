@@ -17,7 +17,10 @@ object MySqlWordsRepository:
           text VARCHAR(50) PRIMARY KEY
         )
         """.effect
-        
+
+      override def dropTable(): ConnectionIO[Unit] =
+        sql"""DROP TABLE Vocabulary.Word""".effect
+
       override def words: ConnectionIO[List[Word]] =
         sql"""SELECT * FROM Vocabulary.Word""".list
 

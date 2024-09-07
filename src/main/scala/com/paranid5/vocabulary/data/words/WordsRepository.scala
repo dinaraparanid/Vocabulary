@@ -7,6 +7,8 @@ trait WordsRepository[F[_] : Applicative, R]:
   extension (repository: R)
     def createTable(): F[Unit]
 
+    def dropTable(): F[Unit]
+
     def words: F[List[Word]]
 
     def getWord(text: String): F[Option[Word]]

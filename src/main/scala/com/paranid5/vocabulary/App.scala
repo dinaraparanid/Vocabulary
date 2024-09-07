@@ -2,18 +2,19 @@ package com.paranid5.vocabulary
 
 import cats.data.{Kleisli, Reader}
 import cats.effect.{ExitCode, IO, IOApp}
+
 import com.comcast.ip4s.{ipv4, port}
+
 import com.paranid5.vocabulary.data.IOTransactor
 import com.paranid5.vocabulary.di.{AppDependencies, AppModule}
 import com.paranid5.vocabulary.routing.main.mainRoutes
+
 import doobie.ConnectionIO
 import doobie.syntax.all.*
+
 import org.http4s.{Request, Response}
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.server.Router
-import org.http4s.server.staticcontent.resourceServiceBuilder
-
-private val AssetsPath = "/com/paranid5/vocabulary/assets"
 
 object App extends IOApp:
   override def run(args: List[String]): IO[ExitCode] =

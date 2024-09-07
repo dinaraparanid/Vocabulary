@@ -1,9 +1,12 @@
 package com.paranid5.vocabulary.routing.main
 
 import cats.data.Reader
+
 import com.paranid5.vocabulary.domain.User
 import com.paranid5.vocabulary.routing.utils.AppHttpResponse
+
 import doobie.syntax.all.*
+
 import org.http4s.headers.`Content-Type`
 import org.http4s.*
 import org.http4s.dsl.io.*
@@ -89,7 +92,7 @@ private def page(
      |  }
      |
      |  const words = '${words.mkString(",")}'.split(",");
-     |  words.forEach(addWord);
+     |  words.filter((word) => word !== "").forEach(addWord);
      |
      |  addButton.addEventListener("click", () => {
      |    const newWord = newWordInput.value;
